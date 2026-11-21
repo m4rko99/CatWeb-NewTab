@@ -9,7 +9,7 @@ A vibecoded **CatWeb-styled** new-tab extension supporting **most browsers**
 4. Turn on developer mode if not already on
 5. Click "Load Unpacked"
 6. Select the folder you downloaded, then click Open Folder at the bottom-right of your file browser (might be different on MacOS or other OSes)
-Done! Your new-tab now uses the CatWeb-NewTab!
+7. Done! Your new-tab now uses the CatWeb-NewTab!
 
 ## Current features
 1. **Supports CatWeb sites** - you can search e.g. z4.rbx and it will redirect to https://catweb.dev/z4.rbx.
