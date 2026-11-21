@@ -17,7 +17,6 @@ Done! Your new-tab now uses the CatWeb-NewTab!
 3. **Any search engine** - It uses your default search engine, no need to change it in its own settings.
 
 ## Upcoming features
-1. **Proper logo** - right now it uses an unofficial CatWeb logo that I recreated (awfully). If anyone has the actual CatWeb logo in SVG or a high quality image, please send it to me (@m4rko99 discord or right [here](https://discord.com/channels/1226224104370208860/1573790068974555368))
-2. **Themes** - color themes like in CatWeb. Will have light and dark with custom colors
+**Themes** - color themes like in CatWeb. Will have light and dark with custom colors
 
 # Request features and feedback [here](https://discord.com/channels/1226224104370208860/1573790068974555368)
