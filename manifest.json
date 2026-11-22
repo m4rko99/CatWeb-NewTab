@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "New Tab",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A dark, minimal new tab page with a search bar and your own shortcuts.",
   "chrome_url_overrides": {
     "newtab": "newtab.html"

@@ -399,29 +399,29 @@ main {
 /* update notice */
 .update {
   position: fixed;
-  left: 16px;
-  bottom: 16px;
+  right: 16px;
+  top: 16px;
   display: flex;
   align-items: center;
-  gap: 4px;
-  height: 34px;
-  padding: 0 6px 0 14px;
+  gap: 6px;
+  height: 46px;
+  padding: 0 10px 0 20px;
   background: var(--field);
-  border-radius: 17px;
-  font-size: 12.5px;
+  border-radius: 23px;
+  font-size: 16px;
   font-weight: 600;
 }
 .update[hidden] { display: none; }
 .update a { color: var(--text); text-decoration: none; }
 .update a:hover { text-decoration: underline; }
 .update button {
-  width: 22px;
-  height: 22px;
+  width: 30px;
+  height: 30px;
   border: 0;
-  border-radius: 11px;
+  border-radius: 15px;
   background: none;
   color: var(--dim);
-  font-size: 16px;
+  font-size: 22px;
   line-height: 1;
   cursor: pointer;
 }
