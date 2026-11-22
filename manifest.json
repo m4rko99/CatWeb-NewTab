@@ -1,15 +1,20 @@
 {
   "manifest_version": 3,
   "name": "New Tab",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "A dark, minimal new tab page with a search bar and your own shortcuts.",
   "chrome_url_overrides": {
     "newtab": "newtab.html"
   },
-  "permissions": ["favicon", "search"],
+  "permissions": [
+    "favicon",
+    "search",
+    "storage"
+  ],
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
-  }
+  },
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmPEaFd/17sCoMgVTwdhYfB8ik9EJsURhw66QzAtf5ZwjaZp/SwYTbQJ2zihmll20FpklAhOx7H8QZTp3XR2ekHKADk8QWWSa2HMYDpI5qqA7hMeomi6LqEh/enU+qNDQTLDtn92qm09Z3IGUYimdseK3CapAYym3tEt0qlin+oj+gx5EhaIyrI0LOo5Uxqt1QPwupSnsBodz0S6nNV4cSQnEbzp2/kJ8L97TJKnpTbbkr148X1pYPgitf7bgClVbbK6TKlr2AxpDH7ZcvFdIx5STP6zVgPmzVhhV7pDHyLnt7VKefcZuUlILcmSrIcljSI9JEKVWWWq4/OISMlccHQIDAQAB"
 }

@@ -1,5 +1,5 @@
 ![CatWeb logo](logo.svg)
-# CatWeb-styled New Tab v1.1.0
+# CatWeb-styled New Tab v1.2.0
 A vibecoded **CatWeb-styled** new-tab extension supporting **most browsers**
 
 ## How to use it
@@ -16,9 +16,10 @@ A vibecoded **CatWeb-styled** new-tab extension supporting **most browsers**
 2. **Add Shortcuts** - Add shortcuts to the new-tab to easily access your favourite sites. This also supports CatWeb sites, but you need to select it.
 3. **Any search engine** - It uses your default search engine, no need to change it in its own settings.
 4. **Custom themes** - You can add themes, there is preset colors and custom color picker.
+5. **Save after update** - Your themes & shortcuts are kept when you download a new update (the extension keeps the same ID and also backs them up to your browser's extension storage, so they even come back after a reinstall if your browser syncs extension data).
+6. **Image themes** - Use an image as your newtab background (click the picture icon in the theme menu).
 
 ## Upcoming features
-**Save after update** - themes & shortcuts will be saved after downloading a new update.
-**Image themes** - Use an image as your newtab background.
+Nothing planned right now, request something below!
 
 # Request features and feedback [here](https://discord.com/channels/1226224104370208860/1573790068974555368)

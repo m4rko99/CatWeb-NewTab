@@ -426,3 +426,19 @@ main {
   cursor: pointer;
 }
 .update button:hover { background: var(--seg); color: var(--text); }
+
+/* image theme */
+body.has-img {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+.swatch.image {
+  display: grid;
+  place-items: center;
+  background: var(--field);
+  border-color: color-mix(in srgb, var(--bg), #fff 20%);
+}
+.swatch.image svg { width: 14px; height: 14px; fill: var(--text); }
+.swatch.image.on { border-color: var(--accent); }

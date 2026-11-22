@@ -21,6 +21,7 @@ function load() {
 }
 function save(items) {
   try { localStorage.setItem(KEY, JSON.stringify(items)); } catch (e) {}
+  backup();
 }
 
 let items = load();
@@ -298,10 +299,13 @@ function applyTheme(t) {
   root.style.setProperty("--bg", t.bg);
   root.classList.toggle("light", !!t.light);
   if (t.over) Object.entries(t.over).forEach(([k, v]) => root.style.setProperty(k, v));
+  document.body.style.backgroundImage = t.image ? 'url("' + t.image + '")' : "";
+  document.body.classList.toggle("has-img", !!t.image);
   document.querySelectorAll(".swatch").forEach((s) => s.classList.toggle("on", s.dataset.id === t.id));
 }
 
 const CUSTOM_KEY = "newtab_custom_theme_v1";
+const IMG_KEY = "newtab_image_v1";
 const hsl2hex = (h, s, l) => {
   const a = s * Math.min(l, 1 - l);
   const f = (n) => {
@@ -330,6 +334,13 @@ function loadTheme() {
   let id = "default";
   try { id = localStorage.getItem(THEME_KEY) || id; } catch (e) {}
   if (id === "custom") return customTheme(loadCustom());
+  if (id === "image") {
+    try {
+      const im = JSON.parse(localStorage.getItem(IMG_KEY));
+      if (im && im.data) return { id: "image", bg: im.bg, light: !!im.light, image: im.data };
+    } catch (e) {}
+    return THEMES[0];
+  }
   return THEMES.find((t) => t.id === id) || THEMES[0];
 }
 
@@ -346,6 +357,7 @@ THEMES.forEach((t) => {
     applyTheme(t);
     savedTheme = t;
     try { localStorage.setItem(THEME_KEY, t.id); } catch (e) {}
+    backup();
   });
   $("swatches").appendChild(b);
 });
@@ -420,6 +432,7 @@ function closePicker(keep) {
       localStorage.setItem(CUSTOM_KEY, JSON.stringify(cp));
       localStorage.setItem(THEME_KEY, "custom");
     } catch (e) {}
+    backup();
   }
   applyTheme(savedTheme); // X / click-away / Esc put the old theme back
 }
@@ -465,4 +478,87 @@ document.addEventListener("keydown", (e) => { if (e.key === "Escape" && pBack.cl
     .then((r) => r.json())
     .then((m) => { st.latest = m.version; st.t = Date.now(); save(); show(m.version); })
     .catch(() => {});
+})();
+
+
+/* image theme: pick a picture as the new tab background */
+const fileInput = document.createElement("input");
+fileInput.type = "file";
+fileInput.accept = "image/*";
+fileInput.hidden = true;
+document.body.appendChild(fileInput);
+
+const imgSwatch = document.createElement("button");
+imgSwatch.type = "button";
+imgSwatch.className = "swatch image";
+imgSwatch.dataset.id = "image";
+imgSwatch.title = "image";
+imgSwatch.innerHTML = '<svg viewBox="0 0 24 24"><path d="M21 19V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2zM8.5 13.5l2.5 3 3.5-4.5 4.5 6H5l3.5-4.5z"/></svg>';
+imgSwatch.addEventListener("click", () => fileInput.click());
+$("swatches").appendChild(imgSwatch);
+applyTheme(savedTheme);
+
+fileInput.addEventListener("change", () => {
+  const f = fileInput.files && fileInput.files[0];
+  fileInput.value = "";
+  if (!f) return;
+  const img = new Image();
+  img.onload = () => {
+    // shrink to max 1920px so it fits in storage
+    const k = Math.min(1, 1920 / Math.max(img.width, img.height));
+    const cv = document.createElement("canvas");
+    cv.width = Math.round(img.width * k);
+    cv.height = Math.round(img.height * k);
+    cv.getContext("2d").drawImage(img, 0, 0, cv.width, cv.height);
+    const data = cv.toDataURL("image/jpeg", 0.82);
+    // average color decides the ui color and if the logo/text should be dark or light
+    const sm = document.createElement("canvas");
+    sm.width = sm.height = 8;
+    const sx = sm.getContext("2d");
+    sx.drawImage(img, 0, 0, 8, 8);
+    const px = sx.getImageData(0, 0, 8, 8).data;
+    let r = 0, g = 0, b = 0;
+    for (let i = 0; i < px.length; i += 4) { r += px[i]; g += px[i + 1]; b += px[i + 2]; }
+    const n = px.length / 4;
+    r = Math.round(r / n); g = Math.round(g / n); b = Math.round(b / n);
+    const bg = "#" + [r, g, b].map((v) => v.toString(16).padStart(2, "0")).join("");
+    const light = 0.299 * r + 0.587 * g + 0.114 * b > 140;
+    try {
+      localStorage.setItem(IMG_KEY, JSON.stringify({ data, bg, light }));
+      localStorage.setItem(THEME_KEY, "image");
+    } catch (e) {
+      alert("That image is too big to save. Try a smaller one.");
+      return;
+    }
+    savedTheme = { id: "image", bg, light, image: data };
+    applyTheme(savedTheme);
+    backup();
+  };
+  img.onerror = () => alert("Couldn't read that image.");
+  img.src = URL.createObjectURL(f);
+});
+
+/* keep shortcuts + theme in extension storage too, so they come back after an update or reinstall */
+function backup() {
+  if (!IN_EXT || !chrome.storage || !chrome.storage.sync) return;
+  const o = {};
+  [KEY, THEME_KEY, CUSTOM_KEY].forEach((k) => {
+    try { const v = localStorage.getItem(k); if (v !== null) o[k] = v; } catch (e) {}
+  });
+  chrome.storage.sync.set(o, () => void chrome.runtime.lastError);
+}
+(function restore() {
+  if (!IN_EXT || !chrome.storage || !chrome.storage.sync) return;
+  const keys = [KEY, THEME_KEY, CUSTOM_KEY];
+  try {
+    if (keys.some((k) => localStorage.getItem(k) !== null)) { backup(); return; }
+  } catch (e) { return; }
+  chrome.storage.sync.get(keys, (o) => {
+    if (chrome.runtime.lastError || !o) return;
+    let any = false;
+    keys.forEach((k) => {
+      if (typeof o[k] === "string") { try { localStorage.setItem(k, o[k]); any = true; } catch (e) {} }
+    });
+    if (any) location.reload();
+  });
 })();
