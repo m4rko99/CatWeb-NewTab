@@ -17,6 +17,6 @@ A vibecoded **CatWeb-styled** new-tab extension supporting **most browsers**
 3. **Any search engine** - It uses your default search engine, no need to change it in its own settings.
 
 ## Upcoming features
-**Save after update** - themes & shortcuts will be saved after downloading a new update
+**Save after update** - themes & shortcuts will be saved after downloading a new update.
 
 # Request features and feedback [here](https://discord.com/channels/1226224104370208860/1573790068974555368)
