@@ -265,3 +265,68 @@ $("searchForm").addEventListener("submit", (e) => {
 });
 
 render();
+
+/* theme menu */
+const THEME_KEY = "newtab_theme_v1";
+const BLACK_OVER = { "--field": "#1c1c1c", "--hover": "#161616", "--border": "#333333", "--panel": "#0d0d0d", "--seg": "#2a2a2a" };
+const THEMES = [
+  // dark row
+  { id: "default", bg: "#333333" },
+  { id: "slate", bg: "#2c303a" },
+  { id: "navy", bg: "#1f2029" },
+  { id: "wine", bg: "#3a2b2b" },
+  { id: "brown", bg: "#3a3128" },
+  { id: "olive", bg: "#38381f" },
+  { id: "forest", bg: "#28392a" },
+  { id: "plum", bg: "#3a2a3a" },
+  { id: "violet", bg: "#2f2438" },
+  // black + light row
+  { id: "black", bg: "#000000", over: BLACK_OVER },
+  { id: "white", bg: "#ffffff", light: true },
+  { id: "sky", bg: "#dbe8fb", light: true },
+  { id: "rose", bg: "#ffe0e0", light: true },
+  { id: "peach", bg: "#ffe6d6", light: true },
+  { id: "lemon", bg: "#fffbd9", light: true },
+  { id: "mint", bg: "#e3fbdc", light: true },
+  { id: "pink", bg: "#ffe0fb", light: true },
+  { id: "lilac", bg: "#f0e0ff", light: true },
+];
+
+function applyTheme(t) {
+  const root = document.documentElement;
+  Object.keys(BLACK_OVER).forEach((k) => root.style.removeProperty(k));
+  root.style.setProperty("--bg", t.bg);
+  root.classList.toggle("light", !!t.light);
+  if (t.over) Object.entries(t.over).forEach(([k, v]) => root.style.setProperty(k, v));
+  document.querySelectorAll(".swatch").forEach((s) => s.classList.toggle("on", s.dataset.id === t.id));
+}
+
+function loadTheme() {
+  let id = "default";
+  try { id = localStorage.getItem(THEME_KEY) || id; } catch (e) {}
+  return THEMES.find((t) => t.id === id) || THEMES[0];
+}
+
+THEMES.forEach((t) => {
+  const b = document.createElement("button");
+  b.type = "button";
+  b.className = "swatch";
+  b.dataset.id = t.id;
+  b.title = t.id;
+  b.style.setProperty("--c", t.bg);
+  b.addEventListener("click", () => {
+    applyTheme(t);
+    try { localStorage.setItem(THEME_KEY, t.id); } catch (e) {}
+  });
+  $("swatches").appendChild(b);
+});
+applyTheme(loadTheme());
+
+const themePanel = $("themePanel");
+$("themeBtn").addEventListener("click", (e) => {
+  e.stopPropagation();
+  themePanel.hidden = !themePanel.hidden;
+});
+themePanel.addEventListener("click", (e) => e.stopPropagation());
+document.addEventListener("click", () => { themePanel.hidden = true; });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") themePanel.hidden = true; });
