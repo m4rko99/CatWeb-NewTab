@@ -1,5 +1,5 @@
 ![CatWeb logo](logo.svg)
-# CatWeb-styled New Tab
+# CatWeb-styled New Tab v1.1.0
 A vibecoded **CatWeb-styled** new-tab extension supporting **most browsers**
 
 ## How to use it
