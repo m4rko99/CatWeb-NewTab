@@ -427,3 +427,42 @@ $("pickerDone").addEventListener("click", () => closePicker(true));
 $("pickerClose").addEventListener("click", () => closePicker(false));
 pBack.addEventListener("mousedown", (e) => { if (e.target === pBack) closePicker(false); });
 document.addEventListener("keydown", (e) => { if (e.key === "Escape" && pBack.classList.contains("open")) closePicker(false); });
+
+
+/* update notice: compares the version in manifest.json with the one on github */
+(function () {
+  if (!IN_EXT) return;
+  const RAW = "https://raw.githubusercontent.com/m4rko99/CatWeb-NewTab/main/manifest.json";
+  const KEY = "newtab_update_v1";
+  const cur = chrome.runtime.getManifest().version;
+
+  const newer = (a, b) => {
+    const x = String(a).split(".").map(Number), y = String(b).split(".").map(Number);
+    for (let i = 0; i < Math.max(x.length, y.length); i++) {
+      const d = (x[i] || 0) - (y[i] || 0);
+      if (d) return d > 0;
+    }
+    return false;
+  };
+  let st = {};
+  try { st = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} };
+
+  function show(v) {
+    if (!newer(v, cur) || st.dismissed === v) return;
+    $("updateLink").textContent = "Update available (v" + v + ")";
+    $("update").hidden = false;
+  }
+  $("updateX").addEventListener("click", () => {
+    st.dismissed = st.latest;
+    save();
+    $("update").hidden = true;
+  });
+
+  // only ask github once every 6 hours
+  if (st.latest && Date.now() - st.t < 6 * 3600 * 1000) { show(st.latest); return; }
+  fetch(RAW, { cache: "no-store" })
+    .then((r) => r.json())
+    .then((m) => { st.latest = m.version; st.t = Date.now(); save(); show(m.version); })
+    .catch(() => {});
+})();

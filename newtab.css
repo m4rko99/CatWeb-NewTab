@@ -395,3 +395,34 @@ main {
 .hue .knob { top: 50%; }
 .picker-foot { display: flex; justify-content: flex-end; }
 .picker-foot .btn { height: 36px; border-radius: 18px; padding: 0 28px; background: var(--seg); }
+
+/* update notice */
+.update {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 34px;
+  padding: 0 6px 0 14px;
+  background: var(--field);
+  border-radius: 17px;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+.update[hidden] { display: none; }
+.update a { color: var(--text); text-decoration: none; }
+.update a:hover { text-decoration: underline; }
+.update button {
+  width: 22px;
+  height: 22px;
+  border: 0;
+  border-radius: 11px;
+  background: none;
+  color: var(--dim);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+.update button:hover { background: var(--seg); color: var(--text); }
