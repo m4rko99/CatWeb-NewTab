@@ -472,8 +472,8 @@ document.addEventListener("keydown", (e) => { if (e.key === "Escape" && pBack.cl
     $("update").hidden = true;
   });
 
-  // only ask github once every 6 hours
-  if (st.latest && Date.now() - st.t < 6 * 3600 * 1000) { show(st.latest); return; }
+  // only ask github once every hour
+  if (st.latest && Date.now() - st.t < 3600 * 1000) { show(st.latest); return; }
   fetch(RAW, { cache: "no-store" })
     .then((r) => r.json())
     .then((m) => { st.latest = m.version; st.t = Date.now(); save(); show(m.version); })
