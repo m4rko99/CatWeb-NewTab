@@ -15,6 +15,7 @@ A vibecoded **CatWeb-styled** new-tab extension supporting **most browsers**
 1. **Supports CatWeb sites** - you can search e.g. z4.rbx and it will redirect to https://catweb.dev/z4.rbx.
 2. **Add Shortcuts** - Add shortcuts to the new-tab to easily access your favourite sites. This also supports CatWeb sites, but you need to select it.
 3. **Any search engine** - It uses your default search engine, no need to change it in its own settings.
+4. **Custom themes** - You can add themes, there is preset colors and custom color picker.
 
 ## Upcoming features
 **Save after update** - themes & shortcuts will be saved after downloading a new update.
