@@ -322,3 +322,76 @@ main {
   cursor: pointer;
 }
 .swatch.on { border-color: var(--accent); }
+
+/* custom swatch + color picker */
+.swatch.custom {
+  background: conic-gradient(#f33, #ff3, #3f3, #3ff, #33f, #f3f, #f33);
+  border-color: color-mix(in srgb, var(--bg), #fff 20%);
+}
+.swatch.custom.on { border-color: var(--accent); }
+
+.picker {
+  width: 100%;
+  max-width: 459px;
+  padding: 20px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: 0 10px 40px rgba(0,0,0,.45);
+}
+.picker-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.picker-head h2 { margin: 0; font-size: 16px; font-weight: 700; }
+.picker-ctl { display: flex; align-items: center; gap: 10px; }
+.mode { display: flex; gap: 2px; padding: 3px; background: var(--field); border-radius: 16px; }
+.mode button {
+  width: 30px;
+  height: 26px;
+  border: 0;
+  border-radius: 13px;
+  background: none;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.mode button svg { width: 15px; height: 15px; fill: var(--dim); }
+.mode button.on { background: var(--seg); }
+.mode button.on svg { fill: var(--text); }
+.x { width: 28px; height: 28px; border: 0; background: none; display: grid; place-items: center; cursor: pointer; }
+.x svg { width: 22px; height: 22px; fill: var(--text); }
+
+.picker-body { display: flex; gap: 14px; height: 150px; }
+.preview { flex: none; width: 80px; border-radius: 10px; border: 1px solid var(--border); }
+.sv {
+  position: relative;
+  flex: 1;
+  border-radius: 10px;
+  cursor: crosshair;
+  touch-action: none;
+  background:
+    linear-gradient(to top, #000, rgba(0,0,0,0)),
+    linear-gradient(to right, #fff, rgba(255,255,255,0)),
+    var(--hue, #f00);
+}
+.hue {
+  position: relative;
+  height: 14px;
+  margin: 18px 4px 16px;
+  border-radius: 7px;
+  cursor: pointer;
+  touch-action: none;
+  background: linear-gradient(to right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
+}
+.knob {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px rgba(0,0,0,.4), 0 1px 4px rgba(0,0,0,.5);
+  pointer-events: none;
+}
+.hue .knob { top: 50%; }
+.picker-foot { display: flex; justify-content: flex-end; }
+.picker-foot .btn { height: 36px; border-radius: 18px; padding: 0 28px; background: var(--seg); }

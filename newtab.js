@@ -301,11 +301,39 @@ function applyTheme(t) {
   document.querySelectorAll(".swatch").forEach((s) => s.classList.toggle("on", s.dataset.id === t.id));
 }
 
+const CUSTOM_KEY = "newtab_custom_theme_v1";
+const hsl2hex = (h, s, l) => {
+  const a = s * Math.min(l, 1 - l);
+  const f = (n) => {
+    const k = (n + h / 30) % 12;
+    const v = l - a * Math.max(-1, Math.min(k - 3, 9 - k, 1));
+    return Math.round(v * 255).toString(16).padStart(2, "0");
+  };
+  return "#" + f(0) + f(8) + f(4);
+};
+// turns the picked color into a dark or light tinted background
+function customTheme(c) {
+  const bg = c.light
+    ? hsl2hex(c.h, c.s, 0.8 + 0.15 * c.v)
+    : hsl2hex(c.h, c.s * 0.5, 0.1 + 0.14 * c.v);
+  return { id: "custom", bg, light: c.light };
+}
+function loadCustom() {
+  try {
+    const c = JSON.parse(localStorage.getItem(CUSTOM_KEY));
+    if (c && isFinite(c.h) && isFinite(c.s) && isFinite(c.v)) return { h: c.h, s: c.s, v: c.v, light: !!c.light };
+  } catch (e) {}
+  return { h: 210, s: 0.6, v: 0.6, light: false };
+}
+
 function loadTheme() {
   let id = "default";
   try { id = localStorage.getItem(THEME_KEY) || id; } catch (e) {}
+  if (id === "custom") return customTheme(loadCustom());
   return THEMES.find((t) => t.id === id) || THEMES[0];
 }
+
+let savedTheme = loadTheme();
 
 THEMES.forEach((t) => {
   const b = document.createElement("button");
@@ -316,11 +344,12 @@ THEMES.forEach((t) => {
   b.style.setProperty("--c", t.bg);
   b.addEventListener("click", () => {
     applyTheme(t);
+    savedTheme = t;
     try { localStorage.setItem(THEME_KEY, t.id); } catch (e) {}
   });
   $("swatches").appendChild(b);
 });
-applyTheme(loadTheme());
+applyTheme(savedTheme);
 
 const themePanel = $("themePanel");
 $("themeBtn").addEventListener("click", (e) => {
@@ -330,3 +359,71 @@ $("themeBtn").addEventListener("click", (e) => {
 themePanel.addEventListener("click", (e) => e.stopPropagation());
 document.addEventListener("click", () => { themePanel.hidden = true; });
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") themePanel.hidden = true; });
+
+
+/* custom color picker */
+const cp = loadCustom();
+const pBack = $("pickerBackdrop");
+
+const customSwatch = document.createElement("button");
+customSwatch.type = "button";
+customSwatch.className = "swatch custom";
+customSwatch.dataset.id = "custom";
+customSwatch.title = "custom";
+customSwatch.addEventListener("click", () => {
+  themePanel.hidden = true;
+  Object.assign(cp, loadCustom());
+  pBack.classList.add("open");
+  renderPicker();
+});
+$("swatches").appendChild(customSwatch);
+applyTheme(savedTheme); // refresh the ring now that the custom swatch exists
+
+function renderPicker() {
+  const t = customTheme(cp);
+  $("pSV").style.setProperty("--hue", "hsl(" + cp.h + ",100%,50%)");
+  $("svKnob").style.left = cp.s * 100 + "%";
+  $("svKnob").style.top = (1 - cp.v) * 100 + "%";
+  $("hueKnob").style.left = (cp.h / 360) * 100 + "%";
+  $("pPreview").style.background = t.bg;
+  $("modeDark").classList.toggle("on", !cp.light);
+  $("modeLight").classList.toggle("on", cp.light);
+  applyTheme(t); // live preview on the page
+}
+
+function drag(el, fn) {
+  const move = (e) => {
+    const r = el.getBoundingClientRect();
+    fn(Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)), Math.min(1, Math.max(0, (e.clientY - r.top) / r.height)));
+    renderPicker();
+  };
+  el.addEventListener("pointerdown", (e) => {
+    e.preventDefault();
+    el.setPointerCapture(e.pointerId);
+    move(e);
+    el.addEventListener("pointermove", move);
+    const up = () => { el.removeEventListener("pointermove", move); el.removeEventListener("pointerup", up); };
+    el.addEventListener("pointerup", up);
+  });
+}
+drag($("pSV"), (x, y) => { cp.s = x; cp.v = 1 - y; });
+drag($("pHue"), (x) => { cp.h = x * 360; });
+
+$("modeDark").addEventListener("click", () => { cp.light = false; renderPicker(); });
+$("modeLight").addEventListener("click", () => { cp.light = true; renderPicker(); });
+
+function closePicker(keep) {
+  pBack.classList.remove("open");
+  if (keep) {
+    savedTheme = customTheme(cp);
+    try {
+      localStorage.setItem(CUSTOM_KEY, JSON.stringify(cp));
+      localStorage.setItem(THEME_KEY, "custom");
+    } catch (e) {}
+  }
+  applyTheme(savedTheme); // X / click-away / Esc put the old theme back
+}
+$("pickerDone").addEventListener("click", () => closePicker(true));
+$("pickerClose").addEventListener("click", () => closePicker(false));
+pBack.addEventListener("mousedown", (e) => { if (e.target === pBack) closePicker(false); });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape" && pBack.classList.contains("open")) closePicker(false); });
