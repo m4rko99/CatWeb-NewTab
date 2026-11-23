@@ -1,6 +1,7 @@
 ![CatWeb logo](logo.svg)
 
-![GitHub manifest version](https://img.shields.io/github/manifest-json/v/m4rko99/CatWeb-NewTab)
+![GitHub manifest version](https://img.shields.io/github/manifest-json/v/m4rko99/CatWeb-NewTab) ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/m4rko99/CatWeb-NewTab/total)
+
 
 # CatWeb-styled New Tab v1.2.0
 A vibecoded **CatWeb-styled** new-tab extension supporting **most browsers**
